@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: container-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: Wissem123!
+      MYSQL_DATABASE: db_example
+    ports:
+      - "3306:3306"
+    networks:
+      - employee-network
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # Monte le script d'initialisation
+
+  springboot-backend:
+    container_name: container-springboot-backend
+    build: 
+      context: user/
+    image: image-springboot-backend 
+    ports:
+      - "9090:9090"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_example?useSSL=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Wissem123!
+    depends_on:
+      - mysql
+    networks:
+      - employee-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: container-phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: Wissem123!
+    ports:
+      - "8081:80"
+    networks:
+      - employee-network
+    depends_on:
+      - mysql
+
+
+
+networks:
+  employee-network:
+    driver: bridge
+
+volumes:
+  mysql-data:

@@ -3,11 +3,10 @@ package org.mpi.user;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(classes = UserApplication.class)
 class UserApplicationTests {
 
     @Test
     void contextLoads() {
     }
-
 }
